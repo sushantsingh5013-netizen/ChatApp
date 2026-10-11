@@ -9,16 +9,5 @@ fun AppNavigation(
     authState: AuthState
 ){
 
-    when(authState){
-        is AuthState.Loading ->{
-            //Splash Screen
-        }
-        is AuthState.LoggedIn -> {
-            // MainNavigation
-        }
-        is AuthState.LoggedOut -> {
-            AuthNavigation()
-        }
-    }
 
 }

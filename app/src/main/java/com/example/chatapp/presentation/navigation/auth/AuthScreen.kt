@@ -6,4 +6,3 @@ import kotlinx.serialization.Serializable
 object Register
 @Serializable
 object Login
-

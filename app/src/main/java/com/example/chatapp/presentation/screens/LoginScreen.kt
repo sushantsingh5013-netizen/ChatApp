@@ -15,6 +15,7 @@ import androidx.compose.material.icons.filled.Person4
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
@@ -24,19 +25,37 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.chatapp.data.auth.GoogleAuthClient
 import com.example.chatapp.presentation.components.SignUpComponent
+import com.example.chatapp.presentation.navigation.auth.AuthState
+import com.example.chatapp.presentation.navigation.auth.AuthViewModel
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.launch
 
 @Composable
 fun LoginScreen(
-    onRegisterButtonClick : () -> Unit
+    onRegisterButtonClick : () -> Unit,
+    viewModel: AuthViewModel,
+    googleAuthClient : GoogleAuthClient,
+    onLoginSuccess : () -> Unit
 ){
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+
+    val authState by viewModel.authState
+        .collectAsStateWithLifecycle()
+
     Column(
         modifier = Modifier.fillMaxSize().padding(horizontal = 20.dp, vertical = 16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -81,13 +100,6 @@ fun LoginScreen(
                 )
             },
             shape = RoundedCornerShape(16.dp)
-//            colors = TextFieldDefaults.colors(
-//                focusedContainerColor = Color.White,
-//                unfocusedContainerColor = Color.White,
-//                focusedIndicatorColor = Color.Transparent,
-//                unfocusedIndicatorColor = Color.Transparent
-//            )
-
         )
 
         OutlinedTextField(
@@ -125,7 +137,9 @@ fun LoginScreen(
             horizontalArrangement = Arrangement.End
         ) {
             TextButton(
-                onClick = {},
+                onClick = {
+//                    todo
+                },
 
                 ) {
                 Text(
@@ -136,14 +150,29 @@ fun LoginScreen(
 
 
         Button(
-            onClick = {},
+            onClick = {
+                viewModel.loginWithEmail(
+                    email,
+                    password
+                )
+            },
             modifier = Modifier
                 .fillMaxWidth(),
             shape = RoundedCornerShape(16.dp)
         ) {
-            Text(
-                text = "Login"
-            )
+            if(authState is AuthState.Loading){
+                CircularProgressIndicator(color = Color.White)
+            }else{
+                Text(
+                    text = "Login",
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Center,
+                    fontSize = 18.sp
+                )
+            }
+//            Text(
+//                text = "Login"
+//            )
         }
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -158,7 +187,25 @@ fun LoginScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        SignUpComponent()
+        SignUpComponent(
+            onGoogleSign = {
+                scope.launch {
+                    try {
+                        val idToken = googleAuthClient.getGoogleIdToken(context)
+                        viewModel.loginWithGoogle(idToken)
+                    }catch (e : CancellationException){
+                        throw e
+                    }catch (e : Exception){
+                        // show credential error TODO
+                        e.message
+                    }
+                }
+            },
+            onAppleSignIn = {
+                //todo
+            },
+            isLoading = (authState is AuthState.Loading)
+        )
 
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -174,6 +221,21 @@ fun LoginScreen(
                 onClick = onRegisterButtonClick
             ) {
                 Text(text = "Register")
+            }
+        }
+
+        when(val state = authState){
+            AuthState.Idle -> Unit
+            AuthState.Loading -> Unit
+            AuthState.LoggedOut -> Unit
+            is AuthState.LoggedIn -> {
+                // todo handle successful login( navigate to home screen)
+                onLoginSuccess()
+            }
+            is AuthState.Error -> {
+                Text(
+                    text = state.message
+                )
             }
         }
 
