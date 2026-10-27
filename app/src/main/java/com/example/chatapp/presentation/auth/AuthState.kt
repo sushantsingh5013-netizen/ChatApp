@@ -1,8 +1,6 @@
-package com.example.chatapp.presentation.navigation.auth
+package com.example.chatapp.presentation.auth
 
 import com.example.chatapp.domain.model.User
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
 
 sealed interface AuthState {
     object Idle : AuthState

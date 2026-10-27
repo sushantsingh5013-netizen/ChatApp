@@ -1,22 +1,14 @@
-package com.example.chatapp.presentation.navigation.auth
+package com.example.chatapp.presentation.navigation
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Button
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.chatapp.data.auth.GoogleAuthClient
-import com.example.chatapp.presentation.navigation.app.Chat
-import com.example.chatapp.presentation.screens.LoginScreen
-import com.example.chatapp.presentation.screens.RegisterScreen
+import com.example.chatapp.presentation.auth.AuthViewModel
+import com.example.chatapp.presentation.auth.LoginScreen
+import com.example.chatapp.presentation.auth.RegisterScreen
 
 @Composable
 fun AuthNavigation(
@@ -48,30 +40,16 @@ fun AuthNavigation(
                 googleAuthClient = googleAuthClient,
                 viewModel = viewModel,
                 onLoginSuccess = {
-                    navController.navigate(Chat){
-                        popUpTo<Chat>{
+                    navController.navigate(Home){
+                        popUpTo<Login>{
                             inclusive = true
                         }
-
+                        launchSingleTop = true
                     }
                     // todo navigate to chat screen
                 }
             )
         }
 
-        composable <Chat>{
-            Column(modifier = Modifier.fillMaxSize(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center) {
-                Text("Welcome", fontSize = 50.sp)
-                Button(
-                    onClick = {
-                        viewModel.logOut()
-                    }
-                ) {
-                    Text("LogOut")
-                }
-            }
-        }
     }
 }

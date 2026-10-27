@@ -1,4 +1,4 @@
-package com.example.chatapp.presentation.screens
+package com.example.chatapp.presentation.auth
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -38,8 +38,6 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.chatapp.data.auth.GoogleAuthClient
 import com.example.chatapp.presentation.components.SignUpComponent
-import com.example.chatapp.presentation.navigation.auth.AuthState
-import com.example.chatapp.presentation.navigation.auth.AuthViewModel
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.launch
 

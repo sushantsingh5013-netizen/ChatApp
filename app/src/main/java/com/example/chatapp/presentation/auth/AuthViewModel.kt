@@ -1,4 +1,4 @@
-package com.example.chatapp.presentation.navigation.auth
+package com.example.chatapp.presentation.auth
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -10,10 +10,10 @@ import com.example.chatapp.domain.usecase.RegisterWithEmail
 import com.example.chatapp.domain.usecase.SaveUserProfile
 import com.example.chatapp.domain.usecase.SignInWithGoogle
 import com.example.chatapp.domain.usecase.SignOut
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
@@ -157,7 +157,7 @@ class AuthViewModel @Inject constructor(
                 }else{
                     AuthState.LoggedOut
                 }
-            }catch (e : Exception){
+            }catch (_ : Exception){
                 _authState.value = AuthState.LoggedOut
             }
         }
@@ -165,7 +165,8 @@ class AuthViewModel @Inject constructor(
 
     fun logOut(){
         viewModelScope.launch {
-            signOut
+            signOut()
+            resetState()
             _authState.value = AuthState.LoggedOut
         }
     }

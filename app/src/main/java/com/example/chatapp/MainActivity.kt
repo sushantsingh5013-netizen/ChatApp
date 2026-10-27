@@ -5,7 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import com.example.chatapp.data.auth.GoogleAuthClient
-import com.example.chatapp.presentation.navigation.auth.AuthNavigation
+import com.example.chatapp.presentation.navigation.AppNavigation
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -19,7 +19,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            AuthNavigation(googleAuthClient)
+            AppNavigation(googleAuthClient = googleAuthClient)
         }
     }
 }

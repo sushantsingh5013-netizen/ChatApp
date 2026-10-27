@@ -28,7 +28,7 @@ data class UserProfileDto(
                 uid = document.getString("uid") ?: "",
                 name = document.getString("name") ?: "",
                 email = document.getString("email") ?: "",
-                profileImage = document.getString("profileImage") ?: "",
+                profileImage = document.getString("profileImage"),
                 isOnline = document.getBoolean("isOnline") ?: false
 
             )

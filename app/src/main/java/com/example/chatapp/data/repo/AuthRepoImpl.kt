@@ -41,13 +41,6 @@ class AuthRepoImpl @Inject constructor(
 
     override fun getCurrentUser(): User? {
         return firebaseAuth.currentUser?.toDomainUser()
-
-//        return User(
-//            uid = firebaseUser.uid,
-//            name = firebaseUser.displayName.orEmpty(),
-//            email = firebaseUser.email.orEmpty(),
-//            profileImage = firebaseUser.photoUrl?.toString()
-//        )
     }
 
     override suspend fun signOut() {

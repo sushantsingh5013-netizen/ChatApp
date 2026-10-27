@@ -40,6 +40,7 @@ fun SignUpComponent(
             modifier = Modifier.fillMaxWidth()
         ) {
             Row(
+                Modifier.fillMaxWidth().height(32.dp).padding(horizontal = 20.dp),
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {

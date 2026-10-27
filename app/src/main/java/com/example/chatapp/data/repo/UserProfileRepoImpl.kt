@@ -5,6 +5,9 @@ import com.example.chatapp.domain.model.UserProfile
 import com.example.chatapp.domain.repo.UserProfileRepo
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 import kotlin.collections.mapOf
@@ -64,5 +67,28 @@ class UserProfileRepoImpl @Inject constructor(
             .fromDocument(snapshot)
             .toDomain()
     }
+
+    override fun getUsers(): Flow<List<UserProfile>> =
+        callbackFlow {
+            val registration = userCollection.addSnapshotListener { snapshot, error ->
+                if(error != null){
+                    close(error)
+                    return@addSnapshotListener
+                }
+
+                if (snapshot != null){
+                    val users = snapshot.documents.map{
+                        document->
+                        UserProfileDto
+                            .fromDocument(document)
+                            .toDomain()
+                    }
+                    trySend(users)
+                }
+            }
+            awaitClose {
+                registration.remove()
+            }
+        }
 
 }

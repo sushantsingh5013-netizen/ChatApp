@@ -6,7 +6,7 @@ import javax.inject.Inject
 class SignOut @Inject constructor(
     private val repository : AuthRepo
 ) {
-    suspend fun invoke(){
+    suspend operator fun invoke(){
         repository.signOut()
     }
 }
